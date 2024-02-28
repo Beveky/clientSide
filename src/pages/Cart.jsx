@@ -5,9 +5,9 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../Responsive";
 import { useSelector, useDispatch } from "react-redux";
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
 import { removeProduct } from "../redux/cartRedux";
+import { Link, useNavigate } from "react-router-dom";
 
 const Container = styled.div``;
 
@@ -170,9 +170,11 @@ const Button = styled.button`
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
+  const bagquantity = useSelector((state) => state.cart.quantity);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
-
+  const user = useSelector((state) => state.user.currentUser);
   const handleDeleteProduct = (productId) => {
     dispatch(removeProduct(productId));
   };
@@ -185,6 +187,16 @@ const Cart = () => {
     }
   };
 
+  const handleCheckout = () => {
+    if (!user) {
+      // If user is not logged in, redirect to login page
+      navigate("/login");
+    } else {
+      // If user is logged in, proceed to checkout
+      navigate("/checkout");
+    }
+  };
+
   return (
     <Container>
       <Navbar />
@@ -192,9 +204,11 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+          <Link to="/">
+            <TopButton>CONTINUE SHOPPING</TopButton>
+          </Link>
           <TopTexts>
-            <TopText>Shopping Bag(2)</TopText>
+            <TopText>Shopping Bag({bagquantity})</TopText>
             <TopText>Your Wishlist (0)</TopText>
           </TopTexts>
           <TopButton type="filled">CHECKOUT NOW</TopButton>
@@ -222,9 +236,9 @@ const Cart = () => {
                       <b>Size:</b> {product.size}
                     </ProductSize>
                     {/* Button to remove product */}
-                    <button onClick={() => handleDeleteProduct(product._id)}>
+                    <Button onClick={() => handleDeleteProduct(product._id)}>
                       Delete
-                    </button>
+                    </Button>
                   </Details>
                 </ProductDetail>
                 <PriceDetail>
@@ -246,21 +260,25 @@ const Cart = () => {
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+              <SummaryItemPrice>
+                {cart.products.length > 0
+                  ? `$ ${cart.total.toFixed(2)}`
+                  : "$ 0.00"}
+              </SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Estimated Shipping</SummaryItemText>
-              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
+              <SummaryItemPrice>$ 6</SummaryItemPrice>
             </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Shipping Discount</SummaryItemText>
-              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
-            </SummaryItem>
+            <SummaryItem></SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+              <SummaryItemPrice>
+                {cart.products.length > 0 ? "$ " + (cart.total + 6) : "$ 0"}
+              </SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT</Button>
+
+            <Button onClick={handleCheckout}>CHECKOUT</Button>
           </Summary>
         </Bottom>
       </Wrapper>

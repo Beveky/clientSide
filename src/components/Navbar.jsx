@@ -1,14 +1,16 @@
 import { Search, ShoppingCartOutlined } from "@mui/icons-material";
 import cover from "../../public/m.png";
 import logo from "../../public/jn.png";
-
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import Badge from "@mui/material/Badge";
 import { mobile, mobile4, mobile6 } from "../Responsive";
 
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { logout } from "../redux/userRedux";
 
 const Container = styled.div`
@@ -200,7 +202,7 @@ const Logo = styled.img`
     justifyContent: "center",
   })}
 `;
-const MenuItem = styled.div`
+const MenuItem1 = styled.div`
   font-size: 18px;
   cursor: pointer;
   margin-left: 25px;
@@ -219,6 +221,26 @@ const MenuItem = styled.div`
     marginLeft: "10px",
   })}
 `;
+const MenuItem2 = styled.div`
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 25px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  ${mobile({
+    fontSize: "12px",
+    marginLeft: "10px",
+  })}
+  ${mobile4({
+    fontSize: "12px",
+    marginLeft: "10px",
+  })}
+    ${mobile6({
+    fontSize: "12px",
+    marginLeft: "10px",
+  })};
+`;
+
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -226,9 +248,10 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
+  const isAdmin = currentUser && currentUser.isAdmin;
+  const UserName = currentUser ? currentUser.username : "";
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout()); // Dispatch the logout action
@@ -250,6 +273,15 @@ const Navbar = () => {
   const quantity = useSelector((state) => state.cart.quantity);
   console.log(quantity);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -269,40 +301,148 @@ const Navbar = () => {
           {windowWidth > 950 && <Logo src={logo} alt="Logo" />}
         </Center>
         <Right>
-          {currentUser ? (
-            // If user is logged in, show logout link
-            <Link
-              style={{ textDecoration: "none", color: "black" }}
-              to="/"
-              onClick={handleLogout}
-            >
-              <MenuItem>Log Out</MenuItem>
+          <>
+            {currentUser ? (
+              <>
+                {isAdmin ? (
+                  <div>
+                    <Button
+                      id="basic-button"
+                      aria-controls={open ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                      onClick={handleClick}
+                    >
+                      Dashboard
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem style={{ color: "gray", fontSize: "12px" }}>
+                        Admin {UserName}
+                      </MenuItem>
+                      <Link
+                        style={{ textDecoration: "none", color: "black" }}
+                        to="/add-product"
+                      >
+                        <MenuItem>Add Product</MenuItem>
+                      </Link>
+                      <Link
+                        style={{ textDecoration: "none", color: "black" }}
+                        to="/myaccount"
+                      >
+                        <MenuItem onClick={handleClose}>My account</MenuItem>
+                      </Link>
+                      <Link
+                        style={{ textDecoration: "none", color: "black" }}
+                        to="/mywishlist"
+                      >
+                        <MenuItem onClick={handleClose}>My WishList</MenuItem>
+                      </Link>
+                    </Menu>
+                  </div>
+                ) : (
+                  <div>
+                    <Button
+                      id="basic-button"
+                      aria-controls={open ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                      onClick={handleClick}
+                    >
+                      Dashboard
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem style={{ color: "gray", fontSize: "12px" }}>
+                        {UserName}
+                      </MenuItem>
+                      <Link
+                        style={{ textDecoration: "none", color: "black" }}
+                        to="/myaccount"
+                      >
+                        <MenuItem onClick={handleClose}>My account</MenuItem>
+                      </Link>
+                      <Link
+                        style={{ textDecoration: "none", color: "black" }}
+                        to="/mywishlist"
+                      >
+                        <MenuItem onClick={handleClose}>My WishList</MenuItem>
+                      </Link>
+                    </Menu>
+                  </div>
+                )}
+                <Link
+                  style={{ textDecoration: "none", color: "black" }}
+                  to="/"
+                  onClick={handleLogout}
+                >
+                  <Button
+                    id="basic-button"
+                    aria-controls={open ? "basic-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                  >
+                    Log Out
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  style={{ textDecoration: "none", color: "black" }}
+                  to="/register"
+                  onClick={handleLogout}
+                >
+                  <Button
+                    id="basic-button"
+                    aria-controls={open ? "basic-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+                <Link
+                  style={{ textDecoration: "none", color: "black" }}
+                  to="/login"
+                  onClick={handleLogout}
+                >
+                  <Button
+                    id="basic-button"
+                    aria-controls={open ? "basic-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                  >
+                    Login
+                  </Button>
+                </Link>
+              </>
+            )}
+            <Link to="/cart">
+              <MenuItem2>
+                <Badge
+                  badgeContent={quantity > 0 ? quantity : 0}
+                  color="secondary"
+                >
+                  <ShoppingCartOutlined color="primary" />
+                </Badge>
+              </MenuItem2>
             </Link>
-          ) : (
-            // If user is not logged in, show login and register links
-            <>
-              <Link
-                style={{ textDecoration: "none", color: "black" }}
-                to="/register"
-              >
-                <MenuItem>Register</MenuItem>
-              </Link>
-              <Link
-                style={{ textDecoration: "none", color: "black" }}
-                to="/login"
-              >
-                <MenuItem>Sign In</MenuItem>
-              </Link>
-            </>
-          )}
-          {/* Always show cart link */}
-          <Link to="/cart">
-            <MenuItem>
-              <Badge badgeContent={quantity} color="primary">
-                <ShoppingCartOutlined color="action" />
-              </Badge>
-            </MenuItem>
-          </Link>
+          </>
         </Right>
       </Wrapper>
     </Container>

@@ -1,8 +1,4 @@
-import {
-  FavoriteBorderOutlined,
-  ShoppingCartOutlined,
-  Visibility,
-} from "@mui/icons-material";
+import { FavoriteBorderOutlined, Visibility } from "@mui/icons-material";
 
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -79,9 +75,6 @@ const Product = ({ item }) => {
       <Circle />
       <Image src={item.img} />
       <Info>
-        <Icon>
-          <ShoppingCartOutlined />
-        </Icon>
         <Icon>
           <Link to={`/product/${item._id}`}>
             <Visibility />

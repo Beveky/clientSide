@@ -9,7 +9,6 @@ const cartSlice = createSlice({
       state.total += action.payload.price * action.payload.quantity;
     },
     removeProduct: (state, action) => {
-      console.log("Removing product with ID:", action.payload);
       const productIdToRemove = action.payload;
       const productToRemoveIndex = state.products.findIndex(
         (product) => product._id === productIdToRemove
@@ -18,16 +17,26 @@ const cartSlice = createSlice({
       if (productToRemoveIndex !== -1) {
         const productToRemove = state.products[productToRemoveIndex];
 
-        // If there's only one instance of the product, remove it completely
-        if (productToRemove.quantity === 1) {
+        // If the product is an array, count it as a single removal event
+        if (Array.isArray(productToRemove)) {
+          // Reduce total quantity by 1, treating the removal of the entire array as one removal event
           state.quantity -= 1;
-          state.total -= productToRemove.price;
-          state.products.splice(productToRemoveIndex, 1);
+          state.total -= productToRemove.reduce(
+            (acc, curr) => acc + curr.price * curr.quantity,
+            0
+          );
+
+          // Remove all products in the array
+          state.products = state.products.filter(
+            (product) =>
+              !productToRemove.map((p) => p._id).includes(product._id)
+          );
         } else {
-          // If there are multiple instances, decrement the quantity and subtract the price of one instance
+          // If the product is a single item, remove it individually
           state.quantity -= 1;
-          state.total -= productToRemove.price;
-          state.products[productToRemoveIndex].quantity -= 1;
+          state.total -= productToRemove.price * productToRemove.quantity;
+
+          state.products.splice(productToRemoveIndex, 1);
         }
       }
     },
