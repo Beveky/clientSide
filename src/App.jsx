@@ -1,4 +1,6 @@
 import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wish";
+import MyAccount from "./pages/MyAcc";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Product from "./pages/Product";
@@ -6,6 +8,7 @@ import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
+import AddProduct from "./pages/AddProduct";
 
 import {
   BrowserRouter as Router,
@@ -26,6 +29,10 @@ function App() {
         <Route path="/product/:id" element={<Product />}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/checkout" element={<Checkout />}></Route>
+        <Route path="/mywishlist" element={<Wishlist />}></Route>
+        <Route path="/myaccount" element={<MyAccount />}></Route>
+        <Route path="/addproduct" element={<AddProduct />}></Route>
+
         <Route
           path="/login"
           element={user ? <Navigate to="/" /> : <Login />}

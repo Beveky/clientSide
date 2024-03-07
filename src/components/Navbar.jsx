@@ -6,12 +6,12 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Badge from "@mui/material/Badge";
 import { mobile, mobile4, mobile6 } from "../Responsive";
-
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../redux/userRedux";
+import { clearWishlist } from "../redux/wishlistRedux";
 
 const Container = styled.div`
   height: 150px;
@@ -255,6 +255,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logout()); // Dispatch the logout action
+    dispatch(clearWishlist());
     persistor.purge(); // Clear persisted state upon logout
   };
 
@@ -294,11 +295,13 @@ const Navbar = () => {
         </Left>
 
         <Center>
-          {windowWidth <= 510 && <Jasmine2>JASMINE.S</Jasmine2>}
-          {windowWidth > 510 && windowWidth <= 950 && (
-            <Jasmine>JASMINE.SHOPY</Jasmine>
-          )}
-          {windowWidth > 950 && <Logo src={logo} alt="Logo" />}
+          <Link to="/">
+            {windowWidth <= 510 && <Jasmine2>JASMINE.S</Jasmine2>}
+            {windowWidth > 510 && windowWidth <= 950 && (
+              <Jasmine>JASMINE.SHOPY</Jasmine>
+            )}
+            {windowWidth > 950 && <Logo src={logo} alt="Logo" />}
+          </Link>
         </Center>
         <Right>
           <>
@@ -312,6 +315,12 @@ const Navbar = () => {
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
                       onClick={handleClick}
+                      sx={{
+                        color: "#c79d6b", // Change text color to white for better visibility
+                        "&:hover": {
+                          backgroundColor: "rgba(199, 157, 107, 0.1)",
+                        },
+                      }}
                     >
                       Dashboard
                     </Button>
@@ -329,7 +338,7 @@ const Navbar = () => {
                       </MenuItem>
                       <Link
                         style={{ textDecoration: "none", color: "black" }}
-                        to="/add-product"
+                        to="/addproduct"
                       >
                         <MenuItem>Add Product</MenuItem>
                       </Link>
@@ -355,6 +364,12 @@ const Navbar = () => {
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
                       onClick={handleClick}
+                      sx={{
+                        color: "#c79d6b", // Change text color to white for better visibility
+                        "&:hover": {
+                          backgroundColor: "rgba(199, 157, 107, 0.1)",
+                        },
+                      }}
                     >
                       Dashboard
                     </Button>
@@ -395,6 +410,12 @@ const Navbar = () => {
                     aria-controls={open ? "basic-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
+                    sx={{
+                      color: "#c79d6b", // Change text color to white for better visibility
+                      "&:hover": {
+                        backgroundColor: "rgba(199, 157, 107, 0.1)",
+                      },
+                    }}
                   >
                     Log Out
                   </Button>
@@ -412,6 +433,12 @@ const Navbar = () => {
                     aria-controls={open ? "basic-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
+                    sx={{
+                      color: "#c79d6b", // Change text color to white for better visibility
+                      "&:hover": {
+                        backgroundColor: "rgba(199, 157, 107, 0.1)",
+                      },
+                    }}
                   >
                     Sign In
                   </Button>
@@ -426,6 +453,12 @@ const Navbar = () => {
                     aria-controls={open ? "basic-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
+                    sx={{
+                      color: "#c79d6b", // Change text color to white for better visibility
+                      "&:hover": {
+                        backgroundColor: "rgba(199, 157, 107, 0.1)",
+                      },
+                    }}
                   >
                     Login
                   </Button>
@@ -438,7 +471,14 @@ const Navbar = () => {
                   badgeContent={quantity > 0 ? quantity : 0}
                   color="secondary"
                 >
-                  <ShoppingCartOutlined color="primary" />
+                  <ShoppingCartOutlined
+                    sx={{
+                      color: "gray", // Change text color to white for better visibility
+                      "&:hover": {
+                        backgroundColor: "rgba(199, 157, 107, 0.0)",
+                      },
+                    }}
+                  />
                 </Badge>
               </MenuItem2>
             </Link>

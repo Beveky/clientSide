@@ -1,8 +1,9 @@
 import { FavoriteBorderOutlined, Visibility } from "@mui/icons-material";
-
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { addItem, removeItem } from "../redux/wishlistRedux";
 
 const Info = styled.div`
   opacity: 0;
@@ -18,6 +19,7 @@ const Info = styled.div`
   justify-content: center;
   transition: all 0.5s ease;
 `;
+
 const Container = styled.div`
   flex: 1;
   margin: 5px;
@@ -29,11 +31,12 @@ const Container = styled.div`
   background-color: #f7f6f6;
   position: relative;
 
-  &: hover ${Info} {
+  &:hover ${Info} {
     opacity: 1;
     cursor: pointer;
   }
 `;
+
 const Circle = styled.div`
   width: 200px;
   height: 200px;
@@ -41,6 +44,7 @@ const Circle = styled.div`
   background-color: white;
   position: absolute;
 `;
+
 const Image = styled.img`
   height: 75%;
   z-index: 2;
@@ -50,7 +54,7 @@ const Icon = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: white;
+  background-color: ${({ isFavorite }) => (isFavorite ? "#dd2b5c" : "white")};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,28 +63,48 @@ const Icon = styled.div`
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: #c79d6b;
+    background-color: ${({ isFavorite }) =>
+      isFavorite ? "#dd2b5c" : "#c79d6b"};
     transform: scale(1.1);
     opacity: 0.5;
   }
 `;
 
 const Product = ({ item }) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const dispatch = useDispatch();
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+
   useEffect(() => {
-    // Scroll to the top of the page when the component mounts
-    window.scrollTo(0, 0);
-  }, []);
+    console.log("item:", item); // Log the value of item
+    if (wishlistItems) {
+      const isInWishlist = wishlistItems.some(
+        (wishlistItem) => wishlistItem._id === item._id
+      );
+      setIsFavorite(isInWishlist);
+    }
+  }, [wishlistItems, item]);
+
+  const toggleFavorite = () => {
+    setIsFavorite((prevState) => !prevState);
+    if (!isFavorite) {
+      dispatch(addItem(item));
+    } else {
+      dispatch(removeItem(item._id));
+    }
+  };
+
   return (
     <Container>
       <Circle />
-      <Image src={item.img} />
+      <Image src={item?.img} />
       <Info>
         <Icon>
-          <Link to={`/product/${item._id}`}>
+          <Link to={`/product/${item?._id}`}>
             <Visibility />
           </Link>
         </Icon>
-        <Icon>
+        <Icon isFavorite={isFavorite} onClick={toggleFavorite}>
           <FavoriteBorderOutlined />
         </Icon>
       </Info>

@@ -209,7 +209,9 @@ const Cart = () => {
           </Link>
           <TopTexts>
             <TopText>Shopping Bag({bagquantity})</TopText>
-            <TopText>Your Wishlist (0)</TopText>
+            <Link style={{ color: "black" }} to="/mywishlist">
+              <TopText>My Wishlist (0)</TopText>
+            </Link>
           </TopTexts>
           <TopButton type="filled">CHECKOUT NOW</TopButton>
         </Top>
@@ -274,7 +276,9 @@ const Cart = () => {
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>
-                {cart.products.length > 0 ? "$ " + (cart.total + 6) : "$ 0"}
+                {cart.products.length > 0
+                  ? "$ " + (((cart.total + 6) * 100) / 100).toFixed(2)
+                  : "$ 0.00"}
               </SummaryItemPrice>
             </SummaryItem>
 

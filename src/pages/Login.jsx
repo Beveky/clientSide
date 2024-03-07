@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { mobile } from "../Responsive";
 import Logo from "../../public/pp.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/apiCalls";
 import { loginStart, loginSuccess, loginFailure } from "../redux/userRedux";
@@ -87,10 +87,19 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const { isFetching, error } = useSelector((state) => state.user);
+  // Handle login click
   const handleClick = (e) => {
     e.preventDefault();
     login(dispatch, { username, password });
   };
+
+  // Clear error state when component unmounts or navigates away
+  useEffect(() => {
+    return () => {
+      dispatch(loginFailure(false)); // Reset error state
+    };
+  }, [dispatch]);
+
   return (
     <Container>
       <Image src={Logo} alt="" />
@@ -109,9 +118,12 @@ const Login = () => {
           <Button onClick={handleClick} disabled={isFetching}>
             LOGIN
           </Button>
-          {error && <Error>Something went wrong...</Error>}
+          {error ? <Error>Something went wrong...</Error> : false}
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
+          <Link >CREATE A NEW ACCOUNT</Link>
+          <h4>Test Admin Acc:</h4>
+          <p>UserName: beveky</p>
+          <p>PassWord: 123456</p>
         </Form>
       </Wrapper>
     </Container>
