@@ -120,7 +120,7 @@ const Login = () => {
           </Button>
           {error ? <Error>Something went wrong...</Error> : false}
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link >CREATE A NEW ACCOUNT</Link>
+          <Link>CREATE A NEW ACCOUNT</Link>
           <h4>Test Admin Acc:</h4>
           <p>UserName: beveky</p>
           <p>PassWord: 123456</p>
